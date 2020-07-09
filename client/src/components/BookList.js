@@ -1,17 +1,11 @@
-import React from 'react';
-import { gql } from "apollo-boost";
+import React, { useState } from 'react';
 import { graphql } from "react-apollo";
+import { getBooksQuery } from "../queries/queries";
 
-const getBooksQuery = gql`
-    {
-        books {
-            name
-            id
-        }
-    }
-`;
+import BookDetails from "../components/BookDetails";
 
 function BookList(props) {
+    const [selectId, setSelectId] = useState(null);
     const { data } = props;
 
     function displayBooks() {
@@ -19,7 +13,10 @@ function BookList(props) {
             return <div>Pending...</div>
         } else {
             return data.books.map((item, index) => {
-                return <li key={index}>{item.name}</li>
+                return <li
+                    key={index}
+                    onClick={(e) => setSelectId(item.id)}
+                >{item.name}</li>
             })
         }
     }
@@ -29,6 +26,7 @@ function BookList(props) {
             <ul className="book-list">
                 {displayBooks()}
             </ul>
+            <BookDetails bookId={selectId} />
         </div>
     )
 }
